@@ -267,12 +267,20 @@ namespace p3ppc.fieldbgmframework
             }
             Utils.LogDebug($"  ✓ Gender restrictions passed");
 
-            if (!IsDateInRange(currentMonth, currentDay, bgm.StartMonth, bgm.StartDay, bgm.EndMonth, bgm.EndDay))
+            // Only check date range if date restrictions are specified
+            if (bgm.StartMonth != -1 || bgm.StartDay != -1 || bgm.EndMonth != -1 || bgm.EndDay != -1)
             {
-                Utils.LogDebug($"  ✗ Date {currentMonth}/{currentDay} not in range {bgm.StartMonth}/{bgm.StartDay} - {bgm.EndMonth}/{bgm.EndDay}");
-                return false;
+                if (!IsDateInRange(currentMonth, currentDay, bgm.StartMonth, bgm.StartDay, bgm.EndMonth, bgm.EndDay))
+                {
+                    Utils.LogDebug($"  ✗ Date {currentMonth}/{currentDay} not in range {bgm.StartMonth}/{bgm.StartDay} - {bgm.EndMonth}/{bgm.EndDay}");
+                    return false;
+                }
+                Utils.LogDebug($"  ✓ Date range check passed");
             }
-            Utils.LogDebug($"  ✓ Date range check passed");
+            else
+            {
+                Utils.LogDebug($"  ✓ No date restrictions (all -1)");
+            }
 
             if (bgm.Flag != -1)
             {
@@ -332,7 +340,7 @@ namespace p3ppc.fieldbgmframework
             }
             else
             {
-                currentMonth = 3
+                currentMonth = 3;
                 currentDay = 31;
                 remainingDays = Math.Abs(totalDays);
 
@@ -398,16 +406,16 @@ namespace p3ppc.fieldbgmframework
 
         private void LogBgmSelection(int bgmId)
         {
-            _logger.WriteLine($"[Enhanced BGM] Playing custom BGM with ID: {bgmId}", System.Drawing.Color.MediumSeaGreen);
+            _logger.WriteLine($"Field BGM Framework] Playing custom BGM with ID: {bgmId}", System.Drawing.Color.MediumSeaGreen);
         }
 
         private void OnLoaderInitialized()
         {
             _modLoader.OnModLoaderInitialized -= OnLoaderInitialized;
-            _logger.WriteLine("Signature scanning completed", System.Drawing.Color.Yellow);
+            _logger.WriteLine("[Field BGM Framework] Signature scanning completed");
 
             var ownModPath = Path.Combine(_modLoader.GetDirectoryForModId(_modConfig.ModId), "bgm");
-            _logger.WriteLine($"[BGM DEBUG] Scanning own mod directory: {ownModPath}", System.Drawing.Color.Cyan);
+            Utils.LogDebug($"[BGM DEBUG] Scanning own mod directory: {ownModPath}");
             if (Directory.Exists(ownModPath))
             {
                 AddFolder(ownModPath);
@@ -426,7 +434,7 @@ namespace p3ppc.fieldbgmframework
                 var modBgmPath = Path.Combine(_modLoader.GetDirectoryForModId(mod.Generic.ModId), "bgm");
                 if (Directory.Exists(modBgmPath))
                 {
-                    _logger.WriteLine($"[BGM DEBUG] Scanning existing mod: {mod.Generic.ModId}", System.Drawing.Color.Cyan);
+                    Utils.LogDebug($"Scanning existing mod: {mod.Generic.ModId}");
                     AddFolder(modBgmPath);
                 }
             }
@@ -445,58 +453,58 @@ namespace p3ppc.fieldbgmframework
 
         private void ModLoading(IModV1 mod, IModConfigV1 modConfig)
         {
-            _logger.WriteLine($"[BGM DEBUG] ModLoading event fired for: {modConfig.ModId}", System.Drawing.Color.Magenta);
+            Utils.LogDebug($"[BGM DEBUG] ModLoading event fired for: {modConfig.ModId}");
 
             var modsPath = Path.Combine(_modLoader.GetDirectoryForModId(modConfig.ModId), "bgm");
-            _logger.WriteLine($"[BGM DEBUG] Checking path: {modsPath}", System.Drawing.Color.Magenta);
+            Utils.LogDebug($"[BGM DEBUG] Checking path: {modsPath}");
 
             if (!Directory.Exists(modsPath))
             {
-                _logger.WriteLine($"[BGM DEBUG] No bgm folder found for mod: {modConfig.ModId}", System.Drawing.Color.Gray);
+                Utils.LogDebug($"[BGM DEBUG] No bgm folder found for mod: {modConfig.ModId}");
                 return;
             }
 
-            _logger.WriteLine($"[BGM DEBUG] Found bgm folder for mod: {modConfig.ModId}", System.Drawing.Color.Green);
+            Utils.LogDebug($"[BGM DEBUG] Found bgm folder for mod: {modConfig.ModId}");
             AddFolder(modsPath);
         }
 
         private void AddFolder(string folder)
         {
-            _logger.WriteLine($"[BGM DEBUG] Checking folder: {folder}", System.Drawing.Color.Yellow);
+            Utils.LogDebug($"[BGM DEBUG] Checking folder: {folder}");
 
             if (!Directory.Exists(folder))
             {
-                _logger.WriteLine($"[BGM DEBUG] Folder does not exist: {folder}", System.Drawing.Color.Red);
+                Utils.LogDebug($"[BGM DEBUG] Folder does not exist: {folder}");
                 return;
             }
 
             var bgmTableJson = Path.Join(folder, "fieldbgm.json");
-            _logger.WriteLine($"[BGM DEBUG] Looking for JSON file at: {bgmTableJson}", System.Drawing.Color.Yellow);
+            Utils.LogDebug($"[BGM DEBUG] Looking for JSON file at: {bgmTableJson}");
 
             if (File.Exists(bgmTableJson))
             {
-                _logger.WriteLine($"[BGM DEBUG] Found JSON file, loading from {bgmTableJson}", System.Drawing.Color.Green);
+                Utils.LogDebug($"[BGM DEBUG] Found JSON file, loading from {bgmTableJson}");
                 var loadedBgm = BgmTable.LoadFromJson(bgmTableJson);
-                _logger.WriteLine($"[BGM DEBUG] Loaded {loadedBgm.Count} entries", System.Drawing.Color.Green);
+                Utils.LogDebug($"[BGM DEBUG] Loaded {loadedBgm.Count} entries");
                 allBgmLists.Add(loadedBgm);
 
                 foreach (var bgm in loadedBgm)
                 {
-                    _logger.WriteLine($"[BGM DEBUG] Entry: {bgm}", System.Drawing.Color.Gray);
+                    Utils.LogDebug($"[BGM DEBUG] Entry: {bgm}");
                 }
             }
             else
             {
-                _logger.WriteLine($"[BGM DEBUG] JSON file not found at: {bgmTableJson}", System.Drawing.Color.Red);
+                Utils.LogDebug($"[BGM DEBUG] JSON file not found at: {bgmTableJson}");
 
                 try
                 {
                     var files = Directory.GetFiles(folder);
-                    _logger.WriteLine($"[BGM DEBUG] Files in folder: {string.Join(", ", files)}", System.Drawing.Color.Yellow);
+                    Utils.LogDebug($"[BGM DEBUG] Files in folder: {string.Join(", ", files)}");
                 }
                 catch (Exception ex)
                 {
-                    _logger.WriteLine($"[BGM DEBUG] Error listing files: {ex.Message}", System.Drawing.Color.Red);
+                    Utils.LogDebug($"[BGM DEBUG] Error listing files: {ex.Message}");
                 }
             }
         }

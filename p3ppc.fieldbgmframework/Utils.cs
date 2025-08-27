@@ -33,22 +33,22 @@ internal class Utils
     internal static void LogDebug(string message)
     {
         if (_config.DebugEnabled)
-            _logger.WriteLine($"[Level Cap] {message}");
+            _logger.WriteLine($"[Field BGM Framework] {message}");
     }
 
     internal static void Log(string message)
     {
-        _logger.WriteLine($"[Level Cap] {message}");
+        _logger.WriteLine($"[Field BGM Framework {message}");
     }
 
     internal static void LogError(string message, Exception e)
     {
-        _logger.WriteLine($"[Level Cap] {message}: {e.Message}", System.Drawing.Color.Red);
+        _logger.WriteLine($"[Field BGM Framework {message}: {e.Message}", System.Drawing.Color.Red);
     }
 
     internal static void LogError(string message)
     {
-        _logger.WriteLine($"[Level Cap] {message}", System.Drawing.Color.Red);
+        _logger.WriteLine($"[Field BGM Framework {message}", System.Drawing.Color.Red);
     }
 
     internal static void SigScan(string pattern, string name, Action<nint> action)
