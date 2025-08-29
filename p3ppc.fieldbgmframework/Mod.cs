@@ -222,64 +222,64 @@ namespace p3ppc.fieldbgmframework
 
         private bool CheckBgmConditions(BgmTable bgm, int fieldMajor, int fieldMinor, int tartarusFloor, int timeOfDay, bool isFemc, int currentMonth, int currentDay)
         {
-            Utils.LogDebug($"  BGM Config: MajorId={bgm.MajorId}, MinorId={bgm.MinorId}, Floor={bgm.TartarusFloor}, Time={bgm.Time}");
-            Utils.LogDebug($"  BGM Restrictions: FemcOnly={bgm.FemcOnly}, MaleOnly={bgm.MaleOnly}, Flag={bgm.Flag}");
-            Utils.LogDebug($"  BGM Date Range: {bgm.StartMonth}/{bgm.StartDay} - {bgm.EndMonth}/{bgm.EndDay}");
+            Utils.LogDebug($" BGM Config: MajorId={bgm.MajorId}, MinorId={bgm.MinorId}, Floor={bgm.TartarusFloor}, Time={bgm.Time}");
+            Utils.LogDebug($" BGM Restrictions: FemcOnly={bgm.FemcOnly}, MaleOnly={bgm.MaleOnly}, Flag={bgm.Flag}");
+            Utils.LogDebug($" BGM Date Range: {bgm.StartMonth}/{bgm.StartDay} - {bgm.EndMonth}/{bgm.EndDay}");
 
             if (bgm.MajorId != -1 && bgm.MajorId != fieldMajor)
             {
-                Utils.LogDebug($"  ✗ Major ID mismatch: need {bgm.MajorId}, got {fieldMajor}");
+                Utils.LogDebug($" ✗ Major ID mismatch: need {bgm.MajorId}, got {fieldMajor}");
                 return false;
             }
-            Utils.LogDebug($"  ✓ Major ID check passed ({(bgm.MajorId == -1 ? "any" : bgm.MajorId.ToString())})");
+            Utils.LogDebug($" ✓ Major ID check passed ({(bgm.MajorId == -1 ? "any" : bgm.MajorId.ToString())})");
 
             if (bgm.MinorId != -1 && bgm.MinorId != fieldMinor)
             {
-                Utils.LogDebug($"  ✗ Minor ID mismatch: need {bgm.MinorId}, got {fieldMinor}");
+                Utils.LogDebug($" ✗ Minor ID mismatch: need {bgm.MinorId}, got {fieldMinor}");
                 return false;
             }
-            Utils.LogDebug($"  ✓ Minor ID check passed ({(bgm.MinorId == -1 ? "any" : bgm.MinorId.ToString())})");
+            Utils.LogDebug($" ✓ Minor ID check passed ({(bgm.MinorId == -1 ? "any" : bgm.MinorId.ToString())})");
 
             if (bgm.TartarusFloor != -1 && bgm.TartarusFloor != tartarusFloor)
             {
-                Utils.LogDebug($"  ✗ Tartarus floor mismatch: need {bgm.TartarusFloor}, got {tartarusFloor}");
+                Utils.LogDebug($" ✗ Tartarus floor mismatch: need {bgm.TartarusFloor}, got {tartarusFloor}");
                 return false;
             }
-            Utils.LogDebug($"  ✓ Tartarus floor check passed ({(bgm.TartarusFloor == -1 ? "any" : bgm.TartarusFloor.ToString())})");
+            Utils.LogDebug($" ✓ Tartarus floor check passed ({(bgm.TartarusFloor == -1 ? "any" : bgm.TartarusFloor.ToString())})");
 
             if (bgm.Time != -1 && bgm.Time != timeOfDay)
             {
-                Utils.LogDebug($"  ✗ Time mismatch: need {bgm.Time}, got {timeOfDay}");
+                Utils.LogDebug($" ✗ Time mismatch: need {bgm.Time}, got {timeOfDay}");
                 return false;
             }
-            Utils.LogDebug($"  ✓ Time check passed ({(bgm.Time == -1 ? "any" : bgm.Time.ToString())})");
+            Utils.LogDebug($" ✓ Time check passed ({(bgm.Time == -1 ? "any" : bgm.Time.ToString())})");
 
             if (bgm.FemcOnly && !isFemc)
             {
-                Utils.LogDebug($"  ✗ FemcOnly restriction failed (player is male)");
+                Utils.LogDebug($" ✗ FemcOnly restriction failed (player is male)");
                 return false;
             }
 
             if (bgm.MaleOnly && isFemc)
             {
-                Utils.LogDebug($"  ✗ MaleOnly restriction failed (player is female)");
+                Utils.LogDebug($" ✗ MaleOnly restriction failed (player is female)");
                 return false;
             }
-            Utils.LogDebug($"  ✓ Gender restrictions passed");
+            Utils.LogDebug($" ✓ Gender restrictions passed");
 
             // Only check date range if date restrictions are specified
             if (bgm.StartMonth != -1 || bgm.StartDay != -1 || bgm.EndMonth != -1 || bgm.EndDay != -1)
             {
                 if (!IsDateInRange(currentMonth, currentDay, bgm.StartMonth, bgm.StartDay, bgm.EndMonth, bgm.EndDay))
                 {
-                    Utils.LogDebug($"  ✗ Date {currentMonth}/{currentDay} not in range {bgm.StartMonth}/{bgm.StartDay} - {bgm.EndMonth}/{bgm.EndDay}");
+                    Utils.LogDebug($" ✗ Date {currentMonth}/{currentDay} not in range {bgm.StartMonth}/{bgm.StartDay} - {bgm.EndMonth}/{bgm.EndDay}");
                     return false;
                 }
-                Utils.LogDebug($"  ✓ Date range check passed");
+                Utils.LogDebug($" ✓ Date range check passed");
             }
             else
             {
-                Utils.LogDebug($"  ✓ No date restrictions (all -1)");
+                Utils.LogDebug($" ✓ No date restrictions (all -1)");
             }
 
             if (bgm.Flag != -1)
@@ -287,17 +287,17 @@ namespace p3ppc.fieldbgmframework
                 bool flagSet = BitCheck(bgm.Flag);
                 if (!flagSet)
                 {
-                    Utils.LogDebug($"  ✗ Flag {bgm.Flag} not set");
+                    Utils.LogDebug($" ✗ Flag {bgm.Flag} not set");
                     return false;
                 }
-                Utils.LogDebug($"  ✓ Flag {bgm.Flag} is set");
+                Utils.LogDebug($" ✓ Flag {bgm.Flag} is set");
             }
             else
             {
-                Utils.LogDebug($"  ✓ No flag requirement");
+                Utils.LogDebug($" ✓ No flag requirement");
             }
 
-            Utils.LogDebug($"  ✓ ALL CONDITIONS PASSED!");
+            Utils.LogDebug($" ✓ ALL CONDITIONS PASSED!");
             return true;
         }
         private (int month, int day) ConvertTotalDaysToDate(int totalDays)
@@ -415,7 +415,7 @@ namespace p3ppc.fieldbgmframework
             _logger.WriteLine("[Field BGM Framework] Signature scanning completed");
 
             var ownModPath = Path.Combine(_modLoader.GetDirectoryForModId(_modConfig.ModId), "bgm");
-            Utils.LogDebug($"[BGM DEBUG] Scanning own mod directory: {ownModPath}");
+            Utils.LogDebug($"Scanning own mod directory: {ownModPath}");
             if (Directory.Exists(ownModPath))
             {
                 AddFolder(ownModPath);
@@ -453,58 +453,58 @@ namespace p3ppc.fieldbgmframework
 
         private void ModLoading(IModV1 mod, IModConfigV1 modConfig)
         {
-            Utils.LogDebug($"[BGM DEBUG] ModLoading event fired for: {modConfig.ModId}");
+            Utils.LogDebug($"ModLoading event fired for: {modConfig.ModId}");
 
             var modsPath = Path.Combine(_modLoader.GetDirectoryForModId(modConfig.ModId), "bgm");
-            Utils.LogDebug($"[BGM DEBUG] Checking path: {modsPath}");
+            Utils.LogDebug($"Checking path: {modsPath}");
 
             if (!Directory.Exists(modsPath))
             {
-                Utils.LogDebug($"[BGM DEBUG] No bgm folder found for mod: {modConfig.ModId}");
+                Utils.LogDebug($"No bgm folder found for mod: {modConfig.ModId}");
                 return;
             }
 
-            Utils.LogDebug($"[BGM DEBUG] Found bgm folder for mod: {modConfig.ModId}");
+            Utils.LogDebug($"Found bgm folder for mod: {modConfig.ModId}");
             AddFolder(modsPath);
         }
 
         private void AddFolder(string folder)
         {
-            Utils.LogDebug($"[BGM DEBUG] Checking folder: {folder}");
+            Utils.LogDebug($"Checking folder: {folder}");
 
             if (!Directory.Exists(folder))
             {
-                Utils.LogDebug($"[BGM DEBUG] Folder does not exist: {folder}");
+                Utils.LogDebug($"Folder does not exist: {folder}");
                 return;
             }
 
             var bgmTableJson = Path.Join(folder, "fieldbgm.json");
-            Utils.LogDebug($"[BGM DEBUG] Looking for JSON file at: {bgmTableJson}");
+            Utils.LogDebug($"Looking for JSON file at: {bgmTableJson}");
 
             if (File.Exists(bgmTableJson))
             {
-                Utils.LogDebug($"[BGM DEBUG] Found JSON file, loading from {bgmTableJson}");
+                Utils.LogDebug($"Found JSON file, loading from {bgmTableJson}");
                 var loadedBgm = BgmTable.LoadFromJson(bgmTableJson);
-                Utils.LogDebug($"[BGM DEBUG] Loaded {loadedBgm.Count} entries");
+                Utils.LogDebug($"Loaded {loadedBgm.Count} entries");
                 allBgmLists.Add(loadedBgm);
 
                 foreach (var bgm in loadedBgm)
                 {
-                    Utils.LogDebug($"[BGM DEBUG] Entry: {bgm}");
+                    Utils.LogDebug($"Entry: {bgm}");
                 }
             }
             else
             {
-                Utils.LogDebug($"[BGM DEBUG] JSON file not found at: {bgmTableJson}");
+                Utils.LogDebug($"JSON file not found at: {bgmTableJson}");
 
                 try
                 {
                     var files = Directory.GetFiles(folder);
-                    Utils.LogDebug($"[BGM DEBUG] Files in folder: {string.Join(", ", files)}");
+                    Utils.LogDebug($"Files in folder: {string.Join(", ", files)}");
                 }
                 catch (Exception ex)
                 {
-                    Utils.LogDebug($"[BGM DEBUG] Error listing files: {ex.Message}");
+                    Utils.LogDebug($"Error listing files: {ex.Message}");
                 }
             }
         }
