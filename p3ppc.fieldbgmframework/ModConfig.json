@@ -1,7 +1,7 @@
 {
   "ModId": "p3ppc.fieldbgmframework",
   "ModName": "Field BGM Framework",
-  "ModAuthor": "Dexxtrip",
+  "ModAuthor": "Noradex",
   "ModVersion": "1.0.0",
   "ModDescription": "Enables mods to choose which fields play which songs and when.",
   "ModDll": "p3ppc.fieldbgmframework.dll",
